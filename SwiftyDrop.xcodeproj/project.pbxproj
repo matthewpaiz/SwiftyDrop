@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		C9864D2C1DF375D100C96E84 /* Build SwiftyDrop */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = C9864D2F1DF375D100C96E84 /* Build configuration list for PBXAggregateTarget "Build SwiftyDrop" */;
+			buildPhases = (
+				C9864D301DF3764100C96E84 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "Build SwiftyDrop";
+			productName = "Build SwiftyDrop";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		9012E0531C6CB1A10035873C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9012E0521C6CB1A10035873C /* InfoPlist.strings */; };
 		9012E0551C6CB1C90035873C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9012E0541C6CB1C90035873C /* Launch Screen.storyboard */; };
@@ -177,6 +191,11 @@
 						CreatedOnToolsVersion = 6.3.2;
 						LastSwiftMigration = 0800;
 					};
+					C9864D2C1DF375D100C96E84 = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = TB322U29JG;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 90E5B9FB1B3578BC0075B777 /* Build configuration list for PBXProject "SwiftyDrop" */;
@@ -194,6 +213,7 @@
 			targets = (
 				90E5BA281B35791A0075B777 /* Demo */,
 				908543641B3690870037B0FD /* SwiftyDrop */,
+				C9864D2C1DF375D100C96E84 /* Build SwiftyDrop */,
 			);
 		};
 /* End PBXProject section */
@@ -218,6 +238,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C9864D301DF3764100C96E84 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Merge Script\n\n# 1\n# Set bash script to exit immediately if any commands fail.\nset -e\n\n# 2\n# Setup some constants for use later on.\nFRAMEWORK_NAME=\"SwiftyDrop\"\n\n# 3\n# If remnants from a previous build exist, delete them.\nif [ -d \"${SRCROOT}/build\" ]; then\nrm -rf \"${SRCROOT}/build\"\nfi\n\n# 4\n# Build the framework for device and for simulator (using\n# all needed architectures).\nxcodebuild -target \"${FRAMEWORK_NAME}\" -configuration Release -arch arm64 -arch armv7 -arch armv7s only_active_arch=no defines_module=yes -sdk \"iphoneos\"\nxcodebuild -target \"${FRAMEWORK_NAME}\" -configuration Release -arch x86_64 -arch i386 only_active_arch=no defines_module=yes -sdk \"iphonesimulator\"\n\n# 5\n# Remove .framework file if exists on Desktop from previous run.\nif [ -d \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework\" ]; then\nrm -rf \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework\"\nfi\n\n# 6\n# Copy the device version of framework to Desktop.\ncp -r \"${SRCROOT}/build/Release-iphoneos/${FRAMEWORK_NAME}.framework\" \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework\"\n\n# 7\n# Replace the framework executable within the framework with\n# a new version created by merging the device and simulator\n# frameworks' executables with lipo.\nlipo -create -output \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\" \"${SRCROOT}/build/Release-iphoneos/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\" \"${SRCROOT}/build/Release-iphonesimulator/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\"\n\n# 8\n# Copy the Swift module mappings for the simulator into the\n# framework.  The device mappings already exist from step 6.\ncp -r \"${SRCROOT}/build/Release-iphonesimulator/${FRAMEWORK_NAME}.framework/Modules/${FRAMEWORK_NAME}.swiftmodule/\" \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework/Modules/${FRAMEWORK_NAME}.swiftmodule\"\n\n# 9\n# Delete the most recent build.\nif [ -d \"${SRCROOT}/build\" ]; then\nrm -rf \"${SRCROOT}/build\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		908543601B3690870037B0FD /* Sources */ = {
@@ -425,6 +461,22 @@
 			};
 			name = Release;
 		};
+		C9864D2D1DF375D100C96E84 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = TB322U29JG;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C9864D2E1DF375D100C96E84 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = TB322U29JG;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -454,6 +506,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		C9864D2F1DF375D100C96E84 /* Build configuration list for PBXAggregateTarget "Build SwiftyDrop" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9864D2D1DF375D100C96E84 /* Debug */,
+				C9864D2E1DF375D100C96E84 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
